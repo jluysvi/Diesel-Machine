@@ -14,28 +14,36 @@ short downLastState = 0;
 
 unsigned long upDebounceTime = 0; 
 unsigned long downDebounceTime = 0;
+unsigned long ledTime = 0;
 
-unsigned long debounceDelay = 50;    
+short debounceDelay = 50;  
+
+
+
+int oldStep = 0;
 
 #include <AccelStepper.h>
 
 AccelStepper stepper(1, stepPin, dirPin);
 
 void setup() {
-  pinMode(buttonUpPin, INPUT);
-  pinMode(buttonDownPin, INPUT);
+  pinMode(buttonUpPin, INPUT_PULLUP);
+  pinMode(buttonDownPin, INPUT_PULLUP);
   pinMode(pinGround1, OUTPUT);
-  pinMode(pinGround1, OUTPUT);
+  pinMode(pinGround2, OUTPUT);
+  pinMode(13, OUTPUT);
+  digitalWrite(pinGround1, LOW);
+  digitalWrite(pinGround2, LOW);
   stepper.setMaxSpeed(1000);
   stepper.setSpeed(1000);
+  Serial.begin(9600);
 }
 
 void loop() {
   debounceUp();
   debounceDown();
   stepper.moveTo(stepCounter);
-  stepper.runSpeedToPosition();
-  
+  stepper.runSpeedToPosition();    
 }
 
 void debounceUp() {
